@@ -27,6 +27,7 @@ const columns = ref([
     format: (rowData) => rowData.user.first_name,
     search: {
       placeholder: "Search by name",
+      initialQuery: "mehmet",
       filter: (rowData: any, query: string) =>
         rowData.user["first_name"].toLowerCase().includes(query.toLowerCase()),
     },

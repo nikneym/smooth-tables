@@ -1,6 +1,6 @@
 <!-- implements a small searcher based on column values -->
 <script setup lang="ts">
-import { ref, watch, onBeforeMount, onMounted } from "vue";
+import { ref, watch, onBeforeMount } from "vue";
 import type ColumnSearch from "../types/column-search";
 
 // component definition
@@ -15,12 +15,17 @@ const emits = defineEmits<{
 // search object destruction
 const { placeholder, initialQuery, filter } = search;
 
-// model
-// FIXME: initial query not working for some reason
-const query = ref<string>(initialQuery ? initialQuery : "");
+const query = ref<string>("");
 
-// keep track of query ref
+// emit `change` events to caller whenever `query` changes
 watch(query, onQueryChange);
+
+// if the `initialQuery` is given, update our query to trigger client-side filtering
+onBeforeMount(() => {
+  if (initialQuery) {
+    query.value = initialQuery;
+  }
+});
 
 function onQueryChange(newQuery: string, oldQuery: string | undefined) {
   const newQueryTrim = newQuery.trim();
