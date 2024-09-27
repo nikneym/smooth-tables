@@ -3,8 +3,8 @@ import { ref, reactive, computed, watch, onMounted } from "vue";
 import { useVirtualizer } from "@tanstack/vue-virtual";
 import type Column from "../types/column";
 import ColumnSearch from "./ColumnSearch.vue";
-import type Notification from "../types/notification";
 import useIsScrolling from "../composables/useIsScrolling";
+import useFilter from "../composables/useFilter";
 
 // Component definition
 const props = defineProps<Props>();
@@ -24,49 +24,10 @@ const visibleColumns = computed(() =>
   props.columns.filter(({ hide }) => !hide)
 );
 
-// table filters kept as `Record` like in the following:
-// filters[field] = { filterFn: () => { ... }, query: string };
-// FIXME: we may prefer `Map` or `Set` data type here
-const filters = reactive<Record<string, Notification>>({
-  /*   name: {
-    // @ts-expect-error
-    filter: (rowData: any, query: string) =>
-      rowData.user["first_name"].toLowerCase().includes(query.toLowerCase()),
-    query: "mehmet",
-  }, */
-});
+const { add: addFilter, remove: removeFilter, filter } = useFilter();
 
 // TODO: implement other filters
-const filteredData = computed(() => {
-  // assign here to reactively listen `props.data`
-  const d = props.data;
-  // make filters iterable
-  const iterableFilters = Object.entries(filters);
-
-  // if we don't have any filters, skip the for loop
-  if (iterableFilters.length === 0) {
-    return d;
-  }
-
-  // holds items that've passed all filter conditions
-  const arr = [];
-
-  // run our filters
-  outer: for (const rowData of d) {
-    for (const [field, { filter, query }] of iterableFilters) {
-      // if any of the conditions not met, continue our iteration and don't add this row
-      // @ts-expect-error
-      if (!filter(rowData, query, field)) {
-        continue outer;
-      }
-    }
-
-    // all conditions met
-    arr.push(rowData);
-  }
-
-  return arr;
-});
+const filteredData = computed(() => filter(props.data));
 
 // virtualizer setup
 const virtualizerOptions = computed(() => {
@@ -95,12 +56,11 @@ const virtualRows = computed(() => virtualizer.value.getVirtualItems());
 function onChange(field: string, query: string, filter: () => boolean) {
   // empty query means this filter has reset
   if (query === "") {
-    delete filters[field];
-    return;
+    return removeFilter(field);
   }
 
   // add the new filter
-  filters[field] = { filter, query };
+  addFilter(field, filter, query);
 }
 
 function measureElement(el: Element) {
