@@ -1,0 +1,33 @@
+/* mimics the default style used throughout tiebra */
+div.table {
+  /* general */
+  --tt-font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --tt-text-color: rgb(65 83 97);
+  --tt-border-width: 1px;
+  --tt-border-style: solid;
+  --tt-border-color: rgb(229 231 235);
+  --tt-padding-left: 0.375rem;
+  --tt-padding-right: 0.375rem;
+  --tt-padding-top: 0.5rem;
+  --tt-padding-bottom: 0.5rem;
+  /* table */
+  --tt-table-border: var(--tt-border-width) var(--tt-border-style)
+    var(--tt-border-color);
+  --tt-table-border-radius: 0.25rem;
+  /* header */
+  --tt-header-background-color: rgb(255 255 255);
+  --tt-header-filter: none;
+  --tt-header-cell-font-size: 0.75rem;
+  --tt-header-cell-font-weight: 700;
+  --tt-header-cell-text-color: rgb(65 83 97);
+  --tt-header-cell-background-color: rgb(255 255 255);
+  --tt-header-cell-background-color-hover: rgb(249 250 251);
+  /* row */
+  --tt-row-font-size: 0.75rem;
+  --tt-row-font-weight: 400;
+  --tt-row-text-color: rgb(65 83 97);
+  --tt-row-background-color: rgb(249 250 251);
+  --tt-row-background-color-odd: rgb(255 255 255);
+  --tt-row-background-color-hover: rgb(254 252 232);
+}
