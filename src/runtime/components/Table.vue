@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ref, reactive, computed, watch, onMounted } from "vue";
+import { ref, reactive, computed, watch, onMounted, defineExpose } from "vue";
 import { useVirtualizer } from "@tanstack/vue-virtual";
 import type Column from "../types/column";
-import ColumnSearch from "./ColumnSearch.vue";
 import useIsScrolling from "../composables/useIsScrolling";
 import useFilter from "../composables/useFilter";
 
@@ -25,7 +24,6 @@ const visibleColumns = computed(() =>
 );
 
 const { add: addFilter, remove: removeFilter, filter } = useFilter();
-
 // TODO: implement other filters
 const filteredData = computed(() => filter(props.data));
 
@@ -54,13 +52,13 @@ const virtualizer = useVirtualizer(virtualizerOptions);
 const virtualRows = computed(() => virtualizer.value.getVirtualItems());
 
 function onChange(field: string, query: string, filter: () => boolean) {
-  // empty query means this filter has reset
+  // empty query means filter has reset
   if (query === "") {
     return removeFilter(field);
   }
 
   // add the new filter
-  addFilter(field, filter, query);
+  return addFilter(field, filter, [query]);
 }
 
 function measureElement(el: Element) {
@@ -75,6 +73,12 @@ function measureElement(el: Element) {
 
 // size of virtualized area
 const totalSize = computed(() => virtualizer.value.getTotalSize());
+
+// exposed utilities
+defineExpose<{
+  addFilter: typeof addFilter;
+  removeFilter: typeof removeFilter;
+}>({ addFilter, removeFilter });
 </script>
 
 <script lang="ts">
@@ -90,6 +94,8 @@ type Key = string | number;
 interface Settings {
   // actual (or estimated if `autoHeight` is true) size true of each row
   estimateSize: <T>(rowData: T, index: number) => number;
+  // whether or not heights of the rows calculated automatically
+  autoHeight?: boolean;
   // unique key for each row
   getItemKey: <T>(rowData: T, index: number) => Key;
   // initial width of the table element in pixels
@@ -98,8 +104,6 @@ interface Settings {
   height: number;
   // number of items to render above and below the visible area, it's better to keep this low
   overscan?: number;
-  // whether or not heights of the rows calculated automatically
-  autoHeight?: boolean;
 }
 </script>
 
@@ -176,7 +180,7 @@ interface Settings {
 <style scoped>
 .list-enter-active,
 .list-leave-active {
-  transition-property: opacity, translate;
+  transition-property: opacity;
   transition-duration: 300ms;
   transition-timing-function: ease-in-out;
 }
@@ -185,7 +189,5 @@ interface Settings {
 .list-enter-from,
 .list-leave-to {
   opacity: 0;
-  /* `transform` is used by virtualizer so we'll prefer `translate` for animations here */
-  translate: 0 100px;
 }
 </style>

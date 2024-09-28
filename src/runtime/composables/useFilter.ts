@@ -1,30 +1,29 @@
 import { reactive } from "vue";
-import type Notification from "../types/notification";
 
-// TODO: support initial filtering that's on when the table has mounted
+// a filter function similar to one given to `Array.prototype.filter` is used for filtering
+export type FilterFn = <T>(rowData: T, key: string, ...args: any[]) => boolean;
+
+// unified filter message for all kinds of filter operations
+export interface Filter {
+  filter: FilterFn;
+  // arguments that're passed to filter function
+  args: any[];
+}
+
+// TODO: support initial filtering that's ran when the table has mounted
 // Provides reactive and unified filter class which can be used for many kinds of filters
 export default function useFilter() {
-  // Filters are hold like:
-  // "name": { filter, query }
-  const filters = reactive<Map<string, Notification>>(new Map());
+  // Filters are held like:
+  // [key]: { filterFn, args }
+  const filters = reactive<Map<string, Filter>>(new Map());
 
-  /*   name: {
-    // @ts-expect-error
-    filter: (rowData: any, query: string) =>
-      rowData.user["first_name"].toLowerCase().includes(query.toLowerCase()),
-    query: "mehmet",
-  }, */
-
-  // Adds a filter to the `filters` by `field`.
-  function add(key: string, filterFn: () => boolean, query: string): void {
-    // add the new filter
-    //filters[field] = { filter: filterFn, query };
-    filters.set(key, { filter: filterFn, query });
+  // Adds a filter to the `filters` by `key`.
+  function add(key: string, filter: FilterFn, args: any[]): void {
+    filters.set(key, { filter, args });
   }
 
-  // Removes a filter from `filters` by `field`.
+  // Removes a filter from `filters` by `key`.
   function remove(key: string): void {
-    //delete filters[field];
     filters.delete(key);
   }
 
@@ -39,16 +38,16 @@ export default function useFilter() {
     // NOTE: seems like `for..of` on a Map and `Map.prototype.entries` are newer and therefore not widely supported
     // we've preferred ES5 version here for a wider support
     // https://stackoverflow.com/a/44134731
-    const iterableFilters = Array.from(filters.entries());
+    const iterable = Array.from(filters.entries());
 
     // holds items that've passed all filter conditions
     const arr = [];
 
     // run our filters
     outer: for (const rowData of data) {
-      for (const [field, { filter, query }] of iterableFilters) {
+      for (const [field, { filter, args }] of iterable) {
         // if any of the conditions not met, continue our iteration and don't add this row
-        if (!filter(rowData, query, field)) {
+        if (!filter(rowData, field, ...args)) {
           continue outer;
         }
       }
