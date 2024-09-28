@@ -1,4 +1,4 @@
-import { type Ref, ref, onMounted } from "vue";
+import { type Ref, ref, onMounted, onUnmounted } from "vue";
 
 // Tracks the given element ref's scroll state reactively
 export default function useIsScrolling(
@@ -12,22 +12,22 @@ export default function useIsScrolling(
 
     let timer: number = -1;
 
-    // FIXME: removeEventListener
-    el.addEventListener(
-      "scroll",
-      () => {
-        // user is scrolling
-        if (timer !== -1) {
-          clearTimeout(timer);
-          isScrolling.value = true;
-        }
+    function onScroll() {
+      // user is scrolling
+      if (timer !== -1) {
+        clearTimeout(timer);
+        isScrolling.value = true;
+      }
 
-        // scrolling has ended
-        // @ts-expect-error
-        timer = setTimeout(() => (isScrolling.value = false), waitThreshold);
-      },
-      false
-    );
+      // scrolling has ended
+      // @ts-expect-error
+      timer = setTimeout(() => (isScrolling.value = false), waitThreshold);
+    }
+
+    el.addEventListener("scroll", onScroll, false);
+
+    // remove scroll event on unmount
+    onUnmounted(() => el.removeEventListener("scroll", onScroll));
   });
 
   return isScrolling;
