@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, reactive, computed, watch, onMounted, defineExpose } from "vue";
+import { ref, computed, defineExpose } from "vue";
 import { useVirtualizer } from "@tanstack/vue-virtual";
 import type Column from "../types/column";
 import useIsScrolling from "../composables/useIsScrolling";
-import useFilter from "../composables/useFilter";
+import useFilter, { type FilterFn } from "../composables/useFilter";
+import useScrollbarWidth from "../composables/useScrollbarWidth";
 
 // Component definition
 const props = defineProps<Props>();
@@ -17,6 +18,8 @@ const {
 const scrollElementRef = ref<HTMLDivElement | null>(null);
 // tracks if `scrollElement` being scrolled or not
 const isScrolling = useIsScrolling(scrollElementRef);
+// reactively receive scrollbar width
+const scrollbarWidth = useScrollbarWidth(scrollElementRef);
 
 // it's better to do this here since it only runs once
 const visibleColumns = computed(() =>
@@ -51,7 +54,12 @@ const virtualizer = useVirtualizer(virtualizerOptions);
 
 const virtualRows = computed(() => virtualizer.value.getVirtualItems());
 
-function onChange(field: string, query: string, filter: () => boolean) {
+// size of virtualized area
+const totalSize = computed(() => virtualizer.value.getTotalSize());
+
+/* functions */
+
+function onColumnSearch(field: string, query: string, filter: FilterFn) {
   // empty query means filter has reset
   if (query === "") {
     return removeFilter(field);
@@ -70,9 +78,6 @@ function measureElement(el: Element) {
 
   return undefined;
 }
-
-// size of virtualized area
-const totalSize = computed(() => virtualizer.value.getTotalSize());
 
 // exposed utilities
 defineExpose<{
@@ -112,20 +117,30 @@ interface Settings {
   <!-- class here includes styles defined by user -->
   <div class="table" :class="$props.class">
     <!-- Table header -->
-    <div class="header">
+    <div class="header" :style="{ paddingRight: scrollbarWidth + 'px' }">
       <div
-        v-for="{ title, field, flex, width, search } of visibleColumns"
+        v-for="{
+          title,
+          field,
+          flex,
+          width,
+          search,
+          selectable,
+        } of visibleColumns"
         :key="field"
         :style="{ flex, width }"
         class="cell"
       >
+        <!-- title -->
         <span class="col-title">{{ title }}</span>
+        <!-- if column is searchable -->
         <ColumnSearch
           v-if="search"
           :field="field"
           :search="search"
-          @change="onChange"
+          @change="onColumnSearch"
         />
+        <ColumnSelect v-else-if="selectable" />
       </div>
     </div>
     <!-- Table body wrapper -->
