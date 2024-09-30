@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { shallowReactive } from "vue";
 
 // a filter function similar to one given to `Array.prototype.filter` is used for filtering
 export type FilterFn = <T>(rowData: T, key: string, ...args: any[]) => boolean;
@@ -15,7 +15,7 @@ export interface Filter {
 export default function useFilter() {
   // Filters are held like:
   // [key]: { filterFn, args }
-  const filters = reactive<Map<string, Filter>>(new Map());
+  const filters = shallowReactive<Map<string, Filter>>(new Map());
 
   // Adds a filter to the `filters` by `key`.
   function add(key: string, filter: FilterFn, args: any[]): void {
@@ -27,7 +27,6 @@ export default function useFilter() {
     filters.delete(key);
   }
 
-  // TODO: implement other filters
   // Filters the given data by `filters`.
   function filter<T>(data: T[]): T[] {
     // if we don't have any filters, skip the for loop
