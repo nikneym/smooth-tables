@@ -1,15 +1,15 @@
 <!-- implements a small searcher based on column values -->
 <script setup lang="ts">
 import { ref, watch, onBeforeMount } from "vue";
-import type ColumnSearch from "../types/column-search";
+import type ColumnSearch from "../../types/column-search";
+import type { FilterFn } from "../../composables/useFilter";
 
 // component definition
 const { field, search } = defineProps<Props>();
 
 // emits
 const emits = defineEmits<{
-  // FIXME: filter type
-  (e: "change", field: string, query: string, filter: any): void;
+  (e: "change", field: string, query: string, filter: FilterFn): void;
 }>();
 
 // search object destruction
@@ -27,7 +27,7 @@ onBeforeMount(() => {
   }
 });
 
-function onQueryChange(newQuery: string, oldQuery: string | undefined) {
+function onQueryChange(newQuery: string, oldQuery: string) {
   const newQueryTrim = newQuery.trim();
   const oldQueryTrim = oldQuery.trim();
 
@@ -38,6 +38,13 @@ function onQueryChange(newQuery: string, oldQuery: string | undefined) {
 
   // filter notification
   emits("change", field, newQueryTrim, filter);
+}
+
+function resetAndFocus(e: MouseEvent) {
+  query.value = "";
+
+  // @ts-expect-error
+  (e.currentTarget.parentElement.firstChild as HTMLInputElement).focus();
 }
 </script>
 
@@ -51,39 +58,22 @@ interface Props {
 </script>
 
 <template>
-  <input
-    :id="field"
-    v-model="query"
-    :name="field"
-    :placeholder="placeholder"
-    :tabindex="0"
-    type="text"
-  />
+  <div class="filter-wrapper">
+    <input
+      :id="field"
+      v-model="query"
+      :name="field"
+      :placeholder="placeholder"
+      :tabindex="0"
+      type="text"
+      @keyup.escape="query = ''"
+    />
+    <!-- reset query button -->
+    <button
+      v-if="query.length > 0"
+      type="button"
+      class="clear"
+      @click="resetAndFocus"
+    />
+  </div>
 </template>
-
-<!-- FIXME: either move this to CSS file or make it a module block -->
-<style scoped>
-/* FIXME: take styles from the theme instead of defining here */
-input[type="text"] {
-  /* reset all the styles */
-  all: unset;
-  position: relative;
-  display: block;
-  width: calc(100% - calc(var(--tt-padding-left) + var(--tt-padding-right)));
-  background-color: white;
-  border: 1px solid var(--tt-border-color);
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: rgb(65 83 97);
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
-  padding-top: 0.375rem;
-  padding-bottom: 0.375rem;
-}
-
-input[type="text"]:focus {
-  outline: 0.125rem solid rgb(245 174 30);
-  outline-offset: 0;
-}
-</style>
