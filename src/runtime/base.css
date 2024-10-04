@@ -22,8 +22,7 @@ div.table > div.header {
   box-sizing: border-box;
   width: 100%;
   height: fit-content;
-  z-index: 1;
-  filter: var(--tt-header-filter);
+  z-index: 999;
   border-color: var(--tt-border-color);
   border-style: var(--tt-border-style);
   /* border-top-width: var(--tt-border-width); */
@@ -32,18 +31,10 @@ div.table > div.header {
   /* these require resets */
   border-left-width: 0;
   border-right-width: 0;
-  /* following fixes a scrollbar bug in Chrome and Opera */
-  overflow-y: scroll;
-}
-
-/* following fixes a scrollbar bug in Chrome and Opera */
-div.table > div.header::-webkit-scrollbar {
-  pointer-events: none;
-  background-color: var(--tt-header-cell-background-color);
 }
 
 div.table > div.header > div.cell {
-  background-color: var(--tt-header-cell-background-color);
+  background-color: inherit;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -51,7 +42,8 @@ div.table > div.header > div.cell {
   row-gap: 0.25rem; /* FIXME: this should be defined in theme */
   box-sizing: border-box;
   user-select: none;
-  overflow: hidden;
+  /* overflow: hidden; */
+  z-index: 100;
   /* padding */
   padding-left: var(--tt-padding-left);
   padding-right: var(--tt-padding-right);
@@ -70,10 +62,6 @@ div.table > div.header > div.cell:last-child {
   border-right-width: 0;
 }
 
-div.table > div.header > div.cell:hover {
-  background-color: var(--tt-header-cell-background-color-hover);
-}
-
 div.table > div.header > div.cell > span.col-title {
   white-space: nowrap;
   overflow: hidden;
@@ -84,12 +72,82 @@ div.table > div.header > div.cell > span.col-title {
   color: var(--tt-header-cell-text-color);
 }
 
+/* header filters wrapper (wraps search, select) */
+div.table > div.header > div.cell > div.filter-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  width: 100%;
+  height: fit-content;
+}
+
+div.table > div.header > div.cell > div.filter-wrapper input[type="text"] {
+  /* reset all the styles */
+  all: unset;
+  display: inline-block;
+  position: inherit;
+  flex: 1;
+  box-sizing: border-box;
+  background-color: var(--tt-input-background-color);
+  border: var(--tt-input-border-width) var(--tt-input-border-style)
+    var(--tt-input-border-color);
+  border-radius: var(--tt-input-border-radius);
+  /* text */
+  font-size: var(--tt-input-font-size);
+  font-weight: var(--tt-input-font-weight);
+  color: var(-tt-input-text-color);
+  /* padding */
+  padding-left: var(--tt-input-padding-left);
+  padding-right: var(--tt-input-padding-right);
+  padding-top: var(--tt-input-padding-top);
+  padding-bottom: var(--tt-input-padding-bottom);
+  /* transition */
+  transition-duration: var(--tt-transition-duration);
+  /* outline */
+  outline-width: var(--tt-outline-width);
+  outline-style: var(--tt-outline-style);
+  outline-color: transparent;
+  outline-offset: var(--tt-outline-offset);
+}
+
+div.table
+  > div.header
+  > div.cell
+  > div.filter-wrapper
+  input[type="text"]:focus {
+  /* outline */
+  outline-width: var(--tt-outline-width);
+  outline-style: var(--tt-outline-style);
+  outline-color: var(--tt-outline-color);
+  outline-offset: var(--tt-outline-offset);
+}
+
+/* FIXME: styles */
+/* FIXME: X icon */
+div.table
+  > div.header
+  > div.cell
+  > div.filter-wrapper
+  button[type="button"].clear {
+  all: unset;
+  position: absolute;
+  right: var(--tt-input-padding-right);
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  transform: translateY(-50%);
+  background-color: red;
+  z-index: 1;
+  cursor: pointer;
+}
+
 div.table > div.body-wrapper {
   position: relative;
   box-sizing: border-box;
   width: 100%;
-  /* always show the scrollbar */
-  overflow-y: scroll;
   overflow-x: hidden;
 }
 
@@ -97,6 +155,7 @@ div.table > div.body-wrapper > div.body {
   position: relative;
   box-sizing: border-box;
   width: inherit;
+  z-index: inherit;
 }
 
 div.table > div.body-wrapper > div.body > div.row {

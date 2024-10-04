@@ -11,18 +11,33 @@ div.table {
   --tt-padding-right: 0.375rem;
   --tt-padding-top: 0.5rem;
   --tt-padding-bottom: 0.5rem;
+  --tt-transition-duration: 150ms;
+  --tt-outline-width: 0.125rem;
+  --tt-outline-style: solid;
+  --tt-outline-color: rgb(254 174 30);
+  --tt-outline-offset: -1px;
   /* table */
   --tt-table-border: var(--tt-border-width) var(--tt-border-style)
     var(--tt-border-color);
   --tt-table-border-radius: 0.25rem;
   /* header */
   --tt-header-background-color: rgb(255 255 255);
-  --tt-header-filter: none;
   --tt-header-cell-font-size: 0.75rem;
   --tt-header-cell-font-weight: 700;
   --tt-header-cell-text-color: rgb(65 83 97);
-  --tt-header-cell-background-color: rgb(255 255 255);
-  --tt-header-cell-background-color-hover: rgb(249 250 251);
+  /* inputs */
+  --tt-input-background-color: rgb(255 255 255);
+  --tt-input-border-width: 1px;
+  --tt-input-border-style: solid;
+  --tt-input-border-color: rgb(229 231 235);
+  --tt-input-border-radius: 0.25rem;
+  --tt-input-font-size: 0.75rem;
+  --tt-input-font-weight: 400;
+  --tt-input-text-color: rgb(65 83 97);
+  --tt-input-padding-left: 0.25rem;
+  --tt-input-padding-right: 0.25rem;
+  --tt-input-padding-top: 0.375rem;
+  --tt-input-padding-bottom: 0.375rem;
   /* row */
   --tt-row-font-size: 0.75rem;
   --tt-row-font-weight: 400;
