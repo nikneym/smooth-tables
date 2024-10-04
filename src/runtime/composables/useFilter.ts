@@ -10,7 +10,6 @@ export interface Filter {
   args: any[];
 }
 
-// TODO: support initial filtering that's ran when the table has mounted
 // Provides reactive and unified filter class which can be used for many kinds of filters
 export default function useFilter() {
   // Filters are held like:
