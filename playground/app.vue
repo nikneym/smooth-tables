@@ -11,20 +11,6 @@ const columns = ref([
     flex: "0.5",
     // @ts-expect-error
     format: (rowData) => rowData.user.id,
-    sortable: {
-      initialIsDescending: false,
-      sort: (a, b) => {
-        if (a.user.first_name > b.user.first_name) {
-          return -1;
-        }
-
-        if (a.user.first_name > b.user.first_name) {
-          return 1;
-        }
-
-        return 0;
-      },
-    },
   },
   {
     field: "avatar",
@@ -63,13 +49,7 @@ const columns = ref([
     flex: "1",
     // @ts-expect-error
     format: (rowData) => rowData.info.place_of_birth,
-    search: {
-      placeholder: "Search by birth place",
-      filter: (rowData: any, _, query: string) =>
-        rowData.info["place_of_birth"]
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-    },
+    selectable: {},
   },
   {
     title: "Age",
@@ -81,24 +61,26 @@ const columns = ref([
 
       return new Date().getFullYear() - date.getFullYear();
     },
+    search: {
+      placeholder: "Search by surname",
+      filter: (rowData: any, _, query: string) =>
+        rowData.user["last_name"].toLowerCase().includes(query.toLowerCase()),
+    },
   },
 ]);
 
 const settings = {
-  estimateSize: () => 52,
-  autoHeight: true,
+  estimateSize: () => 56,
+  autoHeight: false,
   // @ts-expect-error
   // use the ID of a user as our key for each
   getItemKey: (rowData, index) => rowData.user.id,
-  overscan: 13,
   //width: 1024,
   height: 512,
 };
 
 // ref to our table to access it's methods
 const table = ref();
-
-onMounted(() => {});
 </script>
 
 <template>
