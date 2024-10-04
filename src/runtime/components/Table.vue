@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, defineExpose } from "vue";
+import { ref, computed, watch, onMounted, reactive } from "vue";
 import { useVirtualizer } from "@tanstack/vue-virtual";
 import type Column from "../types/column";
 import useIsScrolling from "../composables/useIsScrolling";
 import useFilter, { type FilterFn } from "../composables/useFilter";
 import useScrollbarWidth from "../composables/useScrollbarWidth";
+import useRowCache from "../composables/useRowCache";
 
 // Component definition
 const props = defineProps<Props>();
@@ -42,6 +43,8 @@ const virtualizerOptions = computed(() => {
     getItemKey: (i: number) => getItemKey(filtered[i], i),
     // this allows us to do SSR if width and height are provided
     initialRect: { width, height },
+    // for development
+    debug: false,
     // also helps SSR
     initialOffset: () => 0,
     gap: 0,
@@ -56,6 +59,9 @@ const virtualRows = computed(() => virtualizer.value.getVirtualItems());
 
 // size of virtualized area
 const totalSize = computed(() => virtualizer.value.getTotalSize());
+
+//const virtualRows = ref([]);
+//const rows = useRowCache(virtualizer, filteredData);
 
 /* functions */
 
@@ -172,6 +178,7 @@ interface Settings {
           :class="index % 2 === 0 ? 'row-even' : 'row-odd'"
           class="row"
         >
+          <!-- rendering rows without caching -->
           <div
             v-for="{ field, width, flex, format } of visibleColumns"
             :key="field"
