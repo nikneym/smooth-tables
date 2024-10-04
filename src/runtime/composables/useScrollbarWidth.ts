@@ -8,7 +8,7 @@ export default function useScrollbarWidth(
   const scrollbarWidth = ref<number>(0);
   let resizeObserver: ResizeObserver;
 
-  function calc() {
+  function update() {
     const scrollEl = elementRef.value!;
     scrollbarWidth.value = scrollEl.offsetWidth - scrollEl.clientWidth;
   }
@@ -17,18 +17,18 @@ export default function useScrollbarWidth(
     const element = elementRef.value!;
 
     // initial calculation
-    calc();
+    update();
 
     // recalculate whenever window size or zoom level changes
-    window.addEventListener("resize", calc, false);
+    window.addEventListener("resize", update, false);
 
     // recalculate whenever element size changes
-    resizeObserver = new ResizeObserver(calc);
+    resizeObserver = new ResizeObserver(update);
     resizeObserver.observe(element);
   });
 
   onUnmounted(() => {
-    window.removeEventListener("resize", calc);
+    window.removeEventListener("resize", update);
     resizeObserver.disconnect();
   });
 
