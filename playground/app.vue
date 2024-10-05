@@ -91,14 +91,19 @@ const table = ref();
   <button type="button" @click="myData = [...data]">reload</button>
   <!-- table -->
   <div class="wrapper">
-    <Table ref="table" :columns="columns" :settings="settings" :data="myData">
+    <SmoothTable
+      ref="table"
+      :columns="columns"
+      :settings="settings"
+      :data="myData"
+    >
       <template #avatar="{ value }">
         <div class="img-wrapper">
           <!-- @vue-expect-error -->
           <img :src="value" />
         </div>
       </template>
-    </Table>
+    </SmoothTable>
   </div>
 </template>
 
