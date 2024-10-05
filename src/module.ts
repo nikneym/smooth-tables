@@ -1,17 +1,24 @@
 import { defineNuxtModule, createResolver, addComponentsDir } from "@nuxt/kit";
+import { name, version } from "../package.json";
 
 // Module options TypeScript interface definition
-export interface ModuleOptions {}
+export interface ModuleOptions {
+  // Default is `Smooth`
+  prefix?: string;
+}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: "my-module",
-    configKey: "myModule",
+    name,
+    version,
+    configKey: "smoothTables",
   },
   // Default configuration options of the Nuxt module
-  defaults: {},
-  setup(_options, nuxt) {
-    // @ts-expect-error
+  defaults: {
+    prefix: "Smooth",
+  },
+  setup({ prefix }, nuxt) {
+    // a resolver to resolve paths obviously
     const { resolve } = createResolver(import.meta.url);
 
     // Transpile runtime
@@ -25,10 +32,18 @@ export default defineNuxtModule<ModuleOptions>({
     // FIXME: make this interchangeable
     nuxt.options.css.push(resolve(runtimeDir, "themes", "industry.css"));
 
-    // components
-    addComponentsDir({
-      path: resolve(runtimeDir, "components"),
-      watch: false,
+    nuxt.options.components = nuxt.options.components || [];
+
+    // push our components
+    nuxt.hook("components:dirs", (dirs) => {
+      dirs.push({
+        path: resolve(runtimeDir, "components"),
+        prefix,
+        global: true,
+        watch: false,
+        transpile: true,
+        priority: 0,
+      });
     });
   },
 });
