@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.0.2
+
+[compare changes](https://github.com/nikneym/smooth-tables/compare/v0.0.1...v0.0.2)
+
+### 🏡 Chore
+
+- **release:** V0.0.1 ([542cf3d](https://github.com/nikneym/smooth-tables/commit/542cf3d))
+- Move table types out of component ([0248b61](https://github.com/nikneym/smooth-tables/commit/0248b61))
+
+### ❤️ Contributors
+
+- Nikneym ([@nikneym](http://github.com/nikneym))
+
 ## v0.0.1
 
 
