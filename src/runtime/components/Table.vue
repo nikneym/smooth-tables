@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, reactive } from "vue";
+import { ref, computed } from "vue";
 import { useVirtualizer } from "@tanstack/vue-virtual";
 import type Column from "../types/column";
 import useIsScrolling from "../composables/useIsScrolling";
 import useFilter, { type FilterFn } from "../composables/useFilter";
 import useScrollbarWidth from "../composables/useScrollbarWidth";
-import useRowCache from "../composables/useRowCache";
+import ColumnSearch from "./Column/Search.vue";
+import ColumnSelect from "./Column/Select.vue";
 
 // Component definition
 const props = defineProps<Props>();
