@@ -1,8 +1,8 @@
 {
-  "name": "my-module",
-  "version": "1.0.0",
-  "description": "My new Nuxt module",
-  "repository": "your-org/my-module",
+  "name": "smooth-tables",
+  "version": "0.0.1",
+  "description": "Comprehensive and evolving table & data grid module for Nuxt 3+",
+  "repository": "nikneym/smooth-tables",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -41,9 +41,9 @@
     "@types/node": "latest",
     "@vueuse/core": "^11.1.0",
     "@vueuse/nuxt": "^11.1.0",
-    "changelogen": "^0.5.5",
-    "eslint": "^9.10.0",
-    "nuxt": "^3.13.0",
+    "changelogen": "^0.5.7",
+    "eslint": "^9.11.1",
+    "nuxt": "^3.13.2",
     "typescript": "latest",
     "vitest": "^2.1.1",
     "vue-tsc": "^2.1.6"
