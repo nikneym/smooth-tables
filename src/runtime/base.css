@@ -87,8 +87,8 @@ div.table > div.header > div.cell > div.filter-wrapper input[type="text"] {
   all: unset;
   display: inline-block;
   position: inherit;
-  flex: 1;
   box-sizing: border-box;
+  width: 100%;
   background-color: var(--tt-input-background-color);
   border: var(--tt-input-border-width) var(--tt-input-border-style)
     var(--tt-input-border-color);
