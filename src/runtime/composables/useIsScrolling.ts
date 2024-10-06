@@ -8,7 +8,10 @@ export default function useIsScrolling(
   const isScrolling = ref<boolean>(false);
 
   onMounted(() => {
-    const el = elementRef.value!;
+    const el = elementRef.value;
+    if (!el) {
+      return;
+    }
 
     let timer: number = -1;
 

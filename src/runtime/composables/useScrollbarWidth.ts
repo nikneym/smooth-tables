@@ -14,7 +14,10 @@ export default function useScrollbarWidth(
   }
 
   onMounted(() => {
-    const element = elementRef.value!;
+    const element = elementRef.value;
+    if (!element) {
+      return;
+    }
 
     // initial calculation
     update();
