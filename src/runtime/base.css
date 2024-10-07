@@ -22,7 +22,6 @@ div.table > div.header {
   box-sizing: border-box;
   width: 100%;
   height: fit-content;
-  z-index: 999;
   border-color: var(--tt-border-color);
   border-style: var(--tt-border-style);
   /* border-top-width: var(--tt-border-width); */
@@ -43,7 +42,6 @@ div.table > div.header > div.cell {
   box-sizing: border-box;
   user-select: none;
   /* overflow: hidden; */
-  z-index: 100;
   /* padding */
   padding-left: var(--tt-padding-left);
   padding-right: var(--tt-padding-right);
