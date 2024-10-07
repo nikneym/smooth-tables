@@ -20,7 +20,7 @@ div.table > div.header {
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
-  width: 100%;
+  width: max-content;
   height: fit-content;
   border-color: var(--tt-border-color);
   border-style: var(--tt-border-style);
@@ -146,13 +146,13 @@ div.table > div.body-wrapper {
   position: relative;
   box-sizing: border-box;
   width: 100%;
-  overflow-x: hidden;
+  overflow-x: auto;
 }
 
 div.table > div.body-wrapper > div.body {
   position: relative;
   box-sizing: border-box;
-  width: inherit;
+  width: max-content;
   z-index: inherit;
 }
 
