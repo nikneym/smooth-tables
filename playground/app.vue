@@ -1,83 +1,80 @@
 <script setup lang="ts">
-import data from "./data.json";
+import type Column from "../src/runtime/types/column";
 
-// @ts-expect-error
-const myData = ref<[]>([...data]);
+const myData = ref<[]>([]);
 
-const columns = ref([
-  {
-    title: "ID",
-    field: "id",
-    flex: "0.5",
-    // @ts-expect-error
-    format: (rowData) => rowData.user.id,
-  },
-  {
-    field: "avatar",
-    width: "54px",
-    // @ts-expect-error
-    format: (rowData) => rowData.user.avatar,
-    hide: false,
-  },
-  {
-    title: "Name",
-    field: "name",
-    flex: "1",
-    // @ts-expect-error
-    format: (rowData) => rowData.user.first_name,
-    search: {
-      placeholder: "Search by name",
-      filter: (rowData: any, field: string, query: string) =>
-        rowData.user["first_name"].toLowerCase().includes(query.toLowerCase()),
-    },
-  },
-  {
-    title: "Surname",
-    field: "surname",
-    flex: "1",
-    // @ts-expect-error
-    format: (rowData) => rowData.user.last_name,
-    search: {
-      placeholder: "Search by surname",
-      filter: (rowData: any, _, query: string) =>
-        rowData.user["last_name"].toLowerCase().includes(query.toLowerCase()),
-    },
-  },
-  {
-    title: "Place of Birth",
-    field: "place-of-birth",
-    flex: "1",
-    // @ts-expect-error
-    format: (rowData) => rowData.info.place_of_birth,
-    selectable: {},
-  },
-  {
-    title: "Age",
-    field: "age",
-    flex: "1",
-    // @ts-expect-error
-    format: (rowData) => {
-      const date = new Date(rowData.user.date_of_birth);
+const id = ref<number>(1);
 
-      return new Date().getFullYear() - date.getFullYear();
-    },
-    search: {
-      placeholder: "Search by surname",
-      filter: (rowData: any, _, query: string) =>
-        rowData.user["last_name"].toLowerCase().includes(query.toLowerCase()),
-    },
-  },
-]);
+const {
+  data: swapiData,
+  status,
+  refresh,
+} = await useAsyncData(
+  "people",
+  () => $fetch(`https://swapi.dev/api/people/?page=${id.value}`),
+  {
+    server: true,
+    watch: [id],
+  }
+);
+
+const results = computed(() =>
+  status.value === "success" ? swapiData.value!.results : []
+);
 
 const settings = {
   estimateSize: () => 56,
   autoHeight: false,
   // @ts-expect-error
   // use the ID of a user as our key for each
-  getItemKey: (rowData, index) => rowData.user.id,
+  getItemKey: (rowData, index) => rowData.url,
   //width: 1024,
   height: 512,
 };
+
+const columns: Column[] = [
+  {
+    title: "Name",
+    field: "name",
+    format: (rowData) => rowData.name,
+    flex: "1",
+    search: {
+      placeholder: "Search by name",
+      filter: (rowData, key, query) =>
+        rowData.name.toLowerCase().includes(query.toLowerCase()),
+    },
+  },
+  {
+    title: "Gender",
+    field: "gender",
+    format: (rowData) => rowData.gender,
+    flex: "1",
+  },
+  {
+    title: "Height",
+    field: "height",
+    format: (rowData) => rowData.height,
+    flex: "1",
+  },
+  {
+    title: "Hair Color",
+    field: "hair-color",
+    format: (rowData) => rowData.hair_color,
+    flex: "1",
+  },
+  {
+    title: "Eye Color",
+    field: "eye-color",
+    format: (rowData) => rowData.eye_color,
+    flex: "1",
+  },
+  {
+    title: "Birth Year",
+    field: "birth-year",
+    format: (rowData) => rowData.birth_year,
+    flex: "1",
+  },
+];
 
 // ref to our table to access it's methods
 const table = ref();
@@ -85,25 +82,21 @@ const table = ref();
 
 <template>
   <!-- controls -->
-  <button type="button" @click="myData.splice(0, 1)">remove 1</button>
-  <button type="button" @click="myData = []">remove all</button>
+  <button type="button" @click="results.splice(0, 1)">remove 1</button>
+  <button type="button" @click="swapiData.results = []">remove all</button>
   <!-- @vue-expect-error -->
-  <button type="button" @click="myData = [...data]">reload</button>
+  <button type="button" @click="refresh">reload</button>
+  <button type="button" @click="id--">previous</button>
+  <button type="button" @click="id++">next</button>
   <!-- table -->
   <div class="wrapper">
     <SmoothTable
       ref="table"
       :columns="columns"
       :settings="settings"
-      :data="myData"
-    >
-      <template #avatar="{ value }">
-        <div class="img-wrapper">
-          <!-- @vue-expect-error -->
-          <img :src="value" />
-        </div>
-      </template>
-    </SmoothTable>
+      :data="results"
+      :status="status"
+    />
   </div>
 </template>
 
