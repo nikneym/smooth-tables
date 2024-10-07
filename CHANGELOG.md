@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.4
+
+[compare changes](https://github.com/nikneym/smooth-tables/compare/v0.0.3...v0.0.4)
+
+### 💅 Refactors
+
+- Allow overflowing horizontally in table body ([cdc32fb](https://github.com/nikneym/smooth-tables/commit/cdc32fb))
+
+### 🏡 Chore
+
+- **release:** V0.0.3 ([e8b6c6c](https://github.com/nikneym/smooth-tables/commit/e8b6c6c))
+
+### ❤️ Contributors
+
+- Nikneym ([@nikneym](http://github.com/nikneym))
+
 ## v0.0.3
 
 [compare changes](https://github.com/nikneym/smooth-tables/compare/v0.0.2...v0.0.3)
