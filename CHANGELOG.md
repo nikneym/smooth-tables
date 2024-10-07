@@ -1,6 +1,33 @@
 # Changelog
 
 
+## v0.0.3
+
+[compare changes](https://github.com/nikneym/smooth-tables/compare/v0.0.2...v0.0.3)
+
+### 🚀 Enhancements
+
+- Accept status as prop ([51194d3](https://github.com/nikneym/smooth-tables/commit/51194d3))
+
+### 🩹 Fixes
+
+- Flexbox bug that caused header layout to break ([0927d5b](https://github.com/nikneym/smooth-tables/commit/0927d5b))
+
+### 💅 Refactors
+
+- Check if elements exist in composables ([c349a10](https://github.com/nikneym/smooth-tables/commit/c349a10))
+- Remove unnecessary z-index ([2d7823e](https://github.com/nikneym/smooth-tables/commit/2d7823e))
+
+### 🏡 Chore
+
+- **release:** V0.0.2 ([dfcfc7c](https://github.com/nikneym/smooth-tables/commit/dfcfc7c))
+- Update README ([e8b57fc](https://github.com/nikneym/smooth-tables/commit/e8b57fc))
+- Playground changes ([fba4302](https://github.com/nikneym/smooth-tables/commit/fba4302))
+
+### ❤️ Contributors
+
+- Nikneym ([@nikneym](http://github.com/nikneym))
+
 ## v0.0.2
 
 [compare changes](https://github.com/nikneym/smooth-tables/compare/v0.0.1...v0.0.2)
