@@ -1,3 +1,6 @@
+// virtual import
+import type { AsyncDataRequestStatus } from "#app";
+
 export type Key = string | number;
 
 export interface Settings {
@@ -19,5 +22,8 @@ export interface Table {
   class?: string;
   settings: Settings;
   columns: Column[];
+  // table row data
   data: any[];
+  // data load status
+  status?: AsyncDataRequestStatus;
 }

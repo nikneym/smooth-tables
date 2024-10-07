@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch, toRef } from "vue";
 import { useVirtualizer } from "@tanstack/vue-virtual";
-import type Column from "../types/column";
 import useIsScrolling from "../composables/useIsScrolling";
 import useFilter, { type FilterFn } from "../composables/useFilter";
 import useScrollbarWidth from "../composables/useScrollbarWidth";
@@ -10,7 +9,10 @@ import ColumnSelect from "./Column/Select.vue";
 import type { Table } from "../types/table";
 
 // Component definition
-const props = defineProps<Table>();
+const props = withDefaults(defineProps<Table>(), { status: "success" });
+
+// read-only ref to our status
+const statusRef = toRef(() => props.status);
 
 // destructing here once
 const {
@@ -95,9 +97,12 @@ defineExpose<{
 </script>
 
 <template>
+  <!-- table pending & idle -->
+  <div v-show="statusRef === 'pending' || statusRef === 'idle'">loading...</div>
+
   <!-- Table wrapper -->
   <!-- class here includes styles defined by user -->
-  <div class="table" :class="$props.class">
+  <div v-show="statusRef === 'success'" class="table" :class="$props.class">
     <!-- Table header -->
     <div class="header" :style="{ paddingRight: scrollbarWidth + 'px' }">
       <div
