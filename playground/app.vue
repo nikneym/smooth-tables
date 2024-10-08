@@ -37,7 +37,8 @@ const columns: Column[] = [
     title: "Name",
     field: "name",
     format: (rowData) => rowData.name,
-    flex: "1",
+    //flex: "1",
+    width: "200px",
     search: {
       placeholder: "Search by name",
       filter: (rowData, key, query) =>
@@ -48,31 +49,31 @@ const columns: Column[] = [
     title: "Gender",
     field: "gender",
     format: (rowData) => rowData.gender,
-    flex: "1",
+    width: "200px",
   },
   {
     title: "Height",
     field: "height",
     format: (rowData) => rowData.height,
-    flex: "1",
+    width: "200px",
   },
   {
     title: "Hair Color",
     field: "hair-color",
     format: (rowData) => rowData.hair_color,
-    flex: "1",
+    width: "200px",
   },
   {
     title: "Eye Color",
     field: "eye-color",
     format: (rowData) => rowData.eye_color,
-    flex: "1",
+    width: "200px",
   },
   {
     title: "Birth Year",
     field: "birth-year",
     format: (rowData) => rowData.birth_year,
-    flex: "1",
+    width: "200px",
   },
 ];
 
