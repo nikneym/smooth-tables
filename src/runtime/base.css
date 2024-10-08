@@ -14,7 +14,20 @@ div.table {
   border-radius: var(--tt-table-border-radius);
 }
 
-div.table > div.header {
+div.table > div.header-wrapper {
+  width: 100%;
+  overflow: auto;
+  /* remove scrollbars */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* remove scrollbars */
+div.table > div.header-wrapper::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+div.table > div.header-wrapper > div.header {
   background-color: var(--tt-header-background-color);
   position: relative;
   display: flex;
@@ -32,7 +45,7 @@ div.table > div.header {
   border-right-width: 0;
 }
 
-div.table > div.header > div.cell {
+div.table > div.header-wrapper > div.header > div.cell {
   background-color: inherit;
   position: relative;
   display: flex;
@@ -56,11 +69,11 @@ div.table > div.header > div.cell {
   border-right-width: var(--tt-border-width);
 }
 
-div.table > div.header > div.cell:last-child {
+div.table > div.header-wrapper > div.header > div.cell:last-child {
   border-right-width: 0;
 }
 
-div.table > div.header > div.cell > span.col-title {
+div.table > div.header-wrapper > div.header > div.cell > span.col-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -71,7 +84,7 @@ div.table > div.header > div.cell > span.col-title {
 }
 
 /* header filters wrapper (wraps search, select) */
-div.table > div.header > div.cell > div.filter-wrapper {
+div.table > div.header-wrapper > div.header > div.cell > div.filter-wrapper {
   position: relative;
   display: flex;
   flex-direction: row;
@@ -80,7 +93,12 @@ div.table > div.header > div.cell > div.filter-wrapper {
   height: fit-content;
 }
 
-div.table > div.header > div.cell > div.filter-wrapper input[type="text"] {
+div.table
+  > div.header-wrapper
+  > div.header
+  > div.cell
+  > div.filter-wrapper
+  input[type="text"] {
   /* reset all the styles */
   all: unset;
   display: inline-block;
@@ -110,6 +128,7 @@ div.table > div.header > div.cell > div.filter-wrapper input[type="text"] {
 }
 
 div.table
+  > div.header-wrapper
   > div.header
   > div.cell
   > div.filter-wrapper
@@ -124,6 +143,7 @@ div.table
 /* FIXME: styles */
 /* FIXME: X icon */
 div.table
+  > div.header-wrapper
   > div.header
   > div.cell
   > div.filter-wrapper
@@ -146,7 +166,7 @@ div.table > div.body-wrapper {
   position: relative;
   box-sizing: border-box;
   width: 100%;
-  overflow-x: auto;
+  overflow: auto;
 }
 
 div.table > div.body-wrapper > div.body {

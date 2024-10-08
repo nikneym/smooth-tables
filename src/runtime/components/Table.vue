@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, toRef } from "vue";
+import { ref, computed, watch, toRef, onMounted, onBeforeMount } from "vue";
 import { useVirtualizer } from "@tanstack/vue-virtual";
 import useIsScrolling from "../composables/useIsScrolling";
 import useFilter, { type FilterFn } from "../composables/useFilter";
@@ -19,6 +19,8 @@ const {
   settings: { estimateSize, getItemKey, overscan, autoHeight },
 } = props;
 
+// ref to our table header
+const headerWrapperElementRef = ref<HTMLDivElement | null>(null);
 // ref to our scroller element
 const scrollElementRef = ref<HTMLDivElement | null>(null);
 // tracks if `scrollElement` being scrolled or not
@@ -67,8 +69,6 @@ const totalSize = computed(() => virtualizer.value.getTotalSize());
 //const virtualRows = ref([]);
 //const rows = useRowCache(virtualizer, filteredData);
 
-/* functions */
-
 function onColumnSearch(field: string, query: string, filter: FilterFn) {
   // empty query means filter has reset
   if (query === "") {
@@ -104,30 +104,36 @@ defineExpose<{
   <!-- class here includes styles defined by user -->
   <div v-show="statusRef === 'success'" class="table" :class="$props.class">
     <!-- Table header -->
-    <div class="header" :style="{ paddingRight: scrollbarWidth + 'px' }">
-      <div
-        v-for="{
-          title,
-          field,
-          flex,
-          width,
-          search,
-          selectable,
-        } of visibleColumns"
-        :key="field"
-        :style="{ flex, width }"
-        class="cell"
-      >
-        <!-- title -->
-        <span class="col-title">{{ title }}</span>
-        <!-- if column is searchable -->
-        <ColumnSearch
-          v-if="search"
-          :field="field"
-          :search="search"
-          @change="onColumnSearch"
-        />
-        <ColumnSelect v-else-if="selectable" />
+    <div
+      ref="headerWrapperElementRef"
+      class="header-wrapper"
+      @scroll="e => scrollElementRef.scrollLeft = (e.target as HTMLDivElement).scrollLeft"
+    >
+      <div class="header" :style="{ paddingRight: scrollbarWidth + 'px' }">
+        <div
+          v-for="{
+            title,
+            field,
+            flex,
+            width,
+            search,
+            selectable,
+          } of visibleColumns"
+          :key="field"
+          :style="{ flex, width }"
+          class="cell"
+        >
+          <!-- title -->
+          <span class="col-title">{{ title }}</span>
+          <!-- if column is searchable -->
+          <ColumnSearch
+            v-if="search"
+            :field="field"
+            :search="search"
+            @change="onColumnSearch"
+          />
+          <ColumnSelect v-else-if="selectable" />
+        </div>
       </div>
     </div>
     <!-- Table body wrapper -->
@@ -137,6 +143,7 @@ defineExpose<{
       ref="scrollElementRef"
       class="body-wrapper"
       :style="{ height: settings.height + 'px' }"
+      @scroll="e => headerWrapperElementRef.scrollLeft = (e.target as HTMLDivElement).scrollLeft"
     >
       <!-- Table body -->
       <TransitionGroup
