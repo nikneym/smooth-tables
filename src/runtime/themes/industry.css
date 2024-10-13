@@ -1,8 +1,10 @@
 /* mimics the default style used throughout tiebra */
+/* FIXME: convert `--tt` prefix to `--st` */
 div.table {
   /* general */
-  --tt-font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --tt-font-family: Public Sans, ui-sans-serif, system-ui, Roboto,
+    Helvetica Neue, Public Sans, ui-sans-serif, system-ui, Roboto,
+    Helvetica Neue;
   --tt-text-color: rgb(65 83 97);
   --tt-border-width: 1px;
   --tt-border-style: solid;
@@ -45,4 +47,28 @@ div.table {
   --tt-row-background-color: rgb(249 250 251);
   --tt-row-background-color-odd: rgb(255 255 255);
   --tt-row-background-color-hover: rgb(254 252 232);
+}
+
+button[type="button"].__st-action-menu-trigger {
+  --st-width: 1.25rem;
+  --st-height: 1.25rem;
+  --st-border-radius: 50%;
+  --st-background-color: rgb(255 255 255);
+  --st-background-color-hover: #f3f4f6;
+  --st-border-width: 1px;
+  --st-border-style: solid;
+  --st-border-color: rgb(229 231 235);
+  --st-text-color: rgb(65 83 97);
+}
+
+div.__st-action-menu-dropdown {
+  --st-font-family: Public Sans, ui-sans-serif, system-ui, Roboto,
+    Helvetica Neue, Public Sans, ui-sans-serif, system-ui, Roboto,
+    Helvetica Neue;
+  --st-background-color: rgb(238 242 245);
+  --st-border-radius: 0.375rem;
+  --st-border-width: 1px;
+  --st-border-style: solid;
+  --st-border-color: rgb(229 231 235);
+  --st-filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.05));
 }

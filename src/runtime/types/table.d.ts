@@ -22,6 +22,7 @@ export interface Table {
   class?: string;
   settings: Settings;
   columns: Column[];
+  actions: any[];
   // table row data
   data: any[];
   // data load status

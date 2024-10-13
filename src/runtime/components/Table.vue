@@ -16,6 +16,7 @@ const statusRef = toRef(() => props.status);
 
 // destructing here once
 const {
+  actions,
   settings: { estimateSize, getItemKey, overscan, autoHeight },
 } = props;
 
@@ -96,6 +97,14 @@ defineExpose<{
 }>({ addFilter, removeFilter });
 </script>
 
+<script lang="ts">
+const onRowFocusIn = ({ currentTarget }: FocusEvent) =>
+  ((currentTarget as HTMLDivElement).style.zIndex = "1");
+
+const onRowFocusOut = ({ currentTarget }: FocusEvent) =>
+  ((currentTarget as HTMLDivElement).style.zIndex = "");
+</script>
+
 <template>
   <!-- table pending & idle -->
   <div v-show="statusRef === 'pending' || statusRef === 'idle'">loading...</div>
@@ -110,6 +119,28 @@ defineExpose<{
       @scroll="e => scrollElementRef.scrollLeft = (e.target as HTMLDivElement).scrollLeft"
     >
       <div class="header" :style="{ paddingRight: scrollbarWidth + 'px' }">
+        <!-- row actions -->
+        <div
+          class="body-cell"
+          :style="{
+            position: 'sticky',
+            left: 0,
+            zIndex: 1,
+            backgroundColor: 'inherit',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'start',
+            alignItems: 'end',
+            gap: '4px',
+          }"
+        >
+          <component
+            :is="render"
+            v-for="{ field, render, options } of actions"
+            :key="field"
+            :options="options"
+          ></component>
+        </div>
         <div
           v-for="{
             title,
@@ -146,13 +177,7 @@ defineExpose<{
       @scroll="e => headerWrapperElementRef.scrollLeft = (e.target as HTMLDivElement).scrollLeft"
     >
       <!-- Table body -->
-      <TransitionGroup
-        tag="div"
-        class="body"
-        name="list"
-        :css="!isScrolling"
-        :style="{ height: totalSize + 'px' }"
-      >
+      <div class="body" :style="{ height: totalSize + 'px' }">
         <div
           v-for="{ index, key, start, size } of virtualRows"
           :key="(key as PropertyKey)"
@@ -162,16 +187,44 @@ defineExpose<{
           :style="{
             height: autoHeight ? undefined : size + 'px',
             transform: `translate3d(0, ${start}px, 0)`,
+            // we likely don't need this anymore
+            //zIndex: filteredData.length - index,
           }"
           :class="index % 2 === 0 ? 'row-even' : 'row-odd'"
           class="row"
+          @focusin="onRowFocusIn"
+          @focusout="onRowFocusOut"
         >
+          <!-- row actions -->
+          <div
+            class="body-cell"
+            :style="{
+              position: 'sticky',
+              left: 0,
+              zIndex: 1,
+              backgroundColor: 'inherit',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'start',
+              alignItems: 'center',
+              gap: '4px',
+            }"
+          >
+            <!-- dynamic action components -->
+            <component
+              :is="render"
+              v-for="{ field, render, options } of actions"
+              :key="field"
+              :options="options"
+              :is-scrolling="isScrolling"
+            ></component>
+          </div>
           <!-- rendering rows without caching -->
           <div
             v-for="{ field, width, flex, format } of visibleColumns"
             :key="field"
             :style="{ flex, width }"
-            class="cell"
+            class="body-cell"
           >
             <slot
               :name="field"
@@ -182,7 +235,7 @@ defineExpose<{
             </slot>
           </div>
         </div>
-      </TransitionGroup>
+      </div>
     </div>
   </div>
 </template>
