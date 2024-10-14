@@ -139,6 +139,7 @@ function leaveTransition(el: Element, done: () => void): void {
             :class="$style.dropdown"
             :tabindex="-1"
             :style="floatingStyles"
+            @keyup.escape="toggle = false"
           >
             <ul :tabindex="-1">
               <li
