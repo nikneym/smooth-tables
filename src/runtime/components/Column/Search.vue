@@ -69,11 +69,13 @@ interface Props {
       @keyup.escape="query = ''"
     />
     <!-- reset query button -->
-    <button
-      v-if="query.length > 0"
-      type="button"
-      class="clear"
-      @click="resetAndFocus"
-    />
+    <ClientOnly>
+      <button
+        v-if="query.length > 0"
+        type="button"
+        class="clear"
+        @click="resetAndFocus"
+      />
+    </ClientOnly>
   </div>
 </template>
