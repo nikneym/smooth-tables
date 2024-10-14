@@ -1,6 +1,38 @@
 # Changelog
 
 
+## v0.0.5
+
+[compare changes](https://github.com/nikneym/smooth-tables/compare/v0.0.4...v0.0.5)
+
+### 🚀 Enhancements
+
+- **actions:** Introduce row actions + dropdown action ([739b383](https://github.com/nikneym/smooth-tables/commit/739b383))
+- Implement action callbacks ([c0bf951](https://github.com/nikneym/smooth-tables/commit/c0bf951))
+- **ActionDropdown:** A11y improvements ([0f9f7ff](https://github.com/nikneym/smooth-tables/commit/0f9f7ff))
+
+### 🩹 Fixes
+
+- Scroll the table header when the body is scrolled horizontally ([e537a70](https://github.com/nikneym/smooth-tables/commit/e537a70))
+- **ColumnSearch:** Hydration error ([1896ea4](https://github.com/nikneym/smooth-tables/commit/1896ea4))
+
+### 💅 Refactors
+
+- Prefer `provide` for sharing scroll state to descendants ([043fb81](https://github.com/nikneym/smooth-tables/commit/043fb81))
+- **ActionMenu:** Rename component ([0c3a16d](https://github.com/nikneym/smooth-tables/commit/0c3a16d))
+
+### 🏡 Chore
+
+- **release:** V0.0.4 ([2561e65](https://github.com/nikneym/smooth-tables/commit/2561e65))
+- Playground changes ([a35f5a5](https://github.com/nikneym/smooth-tables/commit/a35f5a5))
+- Add @floating-ui/vue dependency ([10a616e](https://github.com/nikneym/smooth-tables/commit/10a616e))
+- Playground changes ([1b8f8c0](https://github.com/nikneym/smooth-tables/commit/1b8f8c0))
+- Playground changes ([bd4eeb3](https://github.com/nikneym/smooth-tables/commit/bd4eeb3))
+
+### ❤️ Contributors
+
+- Nikneym ([@nikneym](http://github.com/nikneym))
+
 ## v0.0.4
 
 [compare changes](https://github.com/nikneym/smooth-tables/compare/v0.0.3...v0.0.4)
