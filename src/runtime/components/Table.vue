@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, toRef, onMounted, onBeforeMount } from "vue";
+import { ref, computed, watch, toRef, provide, onMounted } from "vue";
 import { useVirtualizer } from "@tanstack/vue-virtual";
 import useIsScrolling from "../composables/useIsScrolling";
 import useFilter, { type FilterFn } from "../composables/useFilter";
@@ -13,6 +13,8 @@ const props = withDefaults(defineProps<Table>(), { status: "success" });
 
 // read-only ref to our status
 const statusRef = toRef(() => props.status);
+// whether or not we have actions defined
+const hasActions = computed(() => props.actions.length > 0);
 
 // destructing here once
 const {
@@ -28,6 +30,10 @@ const scrollElementRef = ref<HTMLDivElement | null>(null);
 const isScrolling = useIsScrolling(scrollElementRef);
 // reactively receive scrollbar width
 const scrollbarWidth = useScrollbarWidth(scrollElementRef);
+
+// providers
+// provide the scroller state to the descendants
+provide<typeof isScrolling>("is-scrolling", isScrolling);
 
 // it's better to do this here since it only runs once
 const visibleColumns = computed(() =>
@@ -49,11 +55,14 @@ const virtualizerOptions = computed(() => {
     estimateSize: (i: number) => estimateSize(filtered[i], i),
     getItemKey: (i: number) => getItemKey(filtered[i], i),
     // this allows us to do SSR if width and height are provided
+    // it only requires `height` to do SSR actually, which is great!
     initialRect: { width, height },
     // for development
     debug: false,
     // also helps SSR
+    // NOTE: this can be customizable by the caller
     initialOffset: () => 0,
+    // don't allow gaps
     gap: 0,
     overscan,
   };
@@ -69,6 +78,10 @@ const totalSize = computed(() => virtualizer.value.getTotalSize());
 
 //const virtualRows = ref([]);
 //const rows = useRowCache(virtualizer, filteredData);
+
+function getSelectedRows() {
+  throw new Error("Not implemented yet");
+}
 
 function onColumnSearch(field: string, query: string, filter: FilterFn) {
   // empty query means filter has reset
@@ -94,7 +107,8 @@ function measureElement(el: Element) {
 defineExpose<{
   addFilter: typeof addFilter;
   removeFilter: typeof removeFilter;
-}>({ addFilter, removeFilter });
+  getSelectedRows: typeof getSelectedRows;
+}>({ addFilter, removeFilter, getSelectedRows });
 </script>
 
 <script lang="ts">
@@ -121,6 +135,7 @@ const onRowFocusOut = ({ currentTarget }: FocusEvent) =>
       <div class="header" :style="{ paddingRight: scrollbarWidth + 'px' }">
         <!-- row actions -->
         <div
+          v-if="hasActions"
           class="body-cell"
           :style="{
             position: 'sticky',
@@ -139,6 +154,7 @@ const onRowFocusOut = ({ currentTarget }: FocusEvent) =>
             v-for="{ field, render, options } of actions"
             :key="field"
             :options="options"
+            :is-group="true"
           ></component>
         </div>
         <div
@@ -197,6 +213,7 @@ const onRowFocusOut = ({ currentTarget }: FocusEvent) =>
         >
           <!-- row actions -->
           <div
+            v-if="hasActions"
             class="body-cell"
             :style="{
               position: 'sticky',
@@ -216,7 +233,7 @@ const onRowFocusOut = ({ currentTarget }: FocusEvent) =>
               v-for="{ field, render, options } of actions"
               :key="field"
               :options="options"
-              :is-scrolling="isScrolling"
+              :row-data="filteredData[index]"
             ></component>
           </div>
           <!-- rendering rows without caching -->
