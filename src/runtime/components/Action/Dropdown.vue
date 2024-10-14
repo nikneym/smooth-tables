@@ -1,28 +1,43 @@
 <script setup lang="ts">
-import { ref, watch, nextTick } from "vue";
+import { ref, watch, nextTick, inject, type Ref } from "vue";
 import { useFloating, offset, flip, shift, autoUpdate } from "@floating-ui/vue";
 import { onClickOutside } from "@vueuse/core";
 
+// FIXME: move to types folder
+interface Option {
+  label: string;
+  action: {
+    (isGroup: true): void;
+    <T>(isGroup: false, rowData: T): void;
+  };
+  isDisabled?: {
+    (isGroup: true): boolean;
+    <T>(isGroup: false, rowData: T): boolean;
+  };
+}
+
+// FIXME: move to types folder
 interface Props {
-  options: [];
-  isScrolling?: boolean;
+  options: Option[];
+  isGroup?: boolean;
+  rowData?: any;
 }
 
 // component definition
-const props = withDefaults(defineProps<Props>(), { isScrolling: false });
+withDefaults(defineProps<Props>(), { isGroup: false, rowData: undefined });
+
+// receive scroller state from the ancestor
+const isScrolling = inject<Ref<boolean>>("is-scrolling");
 
 // dropdown state
 const toggle = ref<boolean>(false);
 
 // set toggle to false whenever the parent wrapper is scrolled
-watch(
-  () => props.isScrolling,
-  (scrolling) => {
-    if (scrolling) {
-      toggle.value = false;
-    }
+watch(isScrolling, (scrolling) => {
+  if (scrolling) {
+    toggle.value = false;
   }
-);
+});
 
 // element refs
 const trigger = ref<HTMLButtonElement>();
@@ -35,13 +50,14 @@ const { floatingStyles } = useFloating(trigger, dropdown, {
     offset(3.125),
     shift(),
     flip(({ placement }) => {
-      // change transform-origin based on placement
+      // flipping can cause `placement` to change so transform-origin must be based on placement
       if (placement === "top-start") {
         dropdown.value.style.transformOrigin = "0 100%";
       } else {
         dropdown.value.style.transformOrigin = "0 0";
       }
 
+      // this callback always expects an object
       return {};
     }),
   ],
@@ -126,11 +142,17 @@ function leaveTransition(el: Element, done: () => void): void {
           >
             <ul :tabindex="-1">
               <li
-                v-for="{ label, action } of options"
+                v-for="{ label, action, isDisabled } of options"
                 :key="label"
                 :tabindex="-1"
               >
-                <button type="button" :tabindex="0" @click="action">
+                <!-- @vue-expect-error -->
+                <button
+                  type="button"
+                  :tabindex="0"
+                  :disabled="isDisabled ? isDisabled(isGroup, rowData) : false"
+                  @click="action(isGroup, rowData)"
+                >
                   {{ label }}
                 </button>
               </li>
@@ -251,5 +273,18 @@ div.dropdown > ul > li > button[type="button"] {
 
 div.dropdown > ul > li > button[type="button"]:hover {
   background-color: rgb(229 231 235);
+}
+
+div.dropdown > ul > li > button[type="button"]:focus {
+  background-color: rgb(229 231 235);
+}
+
+div.dropdown > ul > li > button[type="button"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+div.dropdown > ul > li button[type="button"]:disabled:hover {
+  background-color: initial;
 }
 </style>
