@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SmoothActionDropdown } from "#components";
+import { SmoothActionMenu } from "#components";
 import data from "./data.json";
 import type Column from "../src/runtime/types/column";
 
@@ -58,6 +58,7 @@ const columns = ref<Column[]>([
     format: (rowData) => rowData.user.first_name,
     search: {
       placeholder: "Search by name",
+      initialQuery: "sorin",
       filter: (rowData: any, field: string, query: string) =>
         rowData.user["first_name"].toLowerCase().includes(query.toLowerCase()),
     },
@@ -103,23 +104,49 @@ const columns = ref<Column[]>([
   },
 ]);
 
+// ref to our table to access it's methods
+const table = ref();
+
 // actions array defines operations that user can do on rows
 const actions = [
   {
     field: "action-menu",
-    render: SmoothActionDropdown,
+    render: SmoothActionMenu,
     options: [
-      { label: "Detayları Göster", action: () => console.log("details") },
-      { label: "İş Girişi", action: () => console.log("inputs") },
-      { label: "Vardiya Girişi", action: () => console.log("timings") },
+      {
+        label: "Detayları Göster",
+        action: (isGroup: boolean, rowData: any) => {
+          if (isGroup === true) {
+            const rows = table.value.getSelectedRows();
+            console.log(rows);
+
+            return;
+          }
+
+          console.log(rowData.user.fullname);
+        },
+      },
+      {
+        label: "İş Girişi",
+        action: () => console.log("entries"),
+        isDisabled: (isGroup: boolean, rowData: any) => {
+          // don't allow this option if it's a group action
+          if (isGroup === true) return true;
+
+          // if `fullname` includes `sorin`, don't allow taking this action
+          return rowData.user.fullname.toLowerCase().includes("sorin");
+        },
+      },
       { label: "Düzenle", action: () => console.log("edit") },
-      { label: "Sil", action: () => console.log("remove action") },
+      {
+        label: "Sil",
+        action: () => console.log("remove action"),
+        // only allow removing in group actions
+        isDisabled: (isGroup: boolean) => !isGroup,
+      },
     ],
   },
 ];
-
-// ref to our table to access it's methods
-const table = ref();
 </script>
 
 <template>
