@@ -71,7 +71,12 @@ const virtualizerOptions = computed(() => {
 // precious virtualizer object
 const virtualizer = useVirtualizer(virtualizerOptions);
 
-const virtualRows = computed(() => virtualizer.value.getVirtualItems());
+const virtualRows = computed(() => {
+  // triggers recomputation(?)
+  visibleColumns.value;
+
+  return virtualizer.value.getVirtualItems();
+});
 
 // size of virtualized area
 const totalSize = computed(() => virtualizer.value.getTotalSize());
