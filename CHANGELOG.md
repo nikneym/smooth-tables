@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.0.6
+
+[compare changes](https://github.com/nikneym/smooth-tables/compare/v0.0.5...v0.0.6)
+
+### 🩹 Fixes
+
+- Recompute virtual rows when columns change(?) ([f688e44](https://github.com/nikneym/smooth-tables/commit/f688e44))
+
+### 🏡 Chore
+
+- **release:** V0.0.5 ([6a2a0af](https://github.com/nikneym/smooth-tables/commit/6a2a0af))
+- Update dependencies ([e99a920](https://github.com/nikneym/smooth-tables/commit/e99a920))
+
+### ❤️ Contributors
+
+- Nikneym ([@nikneym](http://github.com/nikneym))
+
 ## v0.0.5
 
 [compare changes](https://github.com/nikneym/smooth-tables/compare/v0.0.4...v0.0.5)
